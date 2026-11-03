@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Python Quest – Coding Python Kelas X</title>
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{color-scheme:dark;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:#070b1a;color:#e2e8f0;font-family:Inter,system-ui,sans-serif;min-height:100vh;background-image:radial-gradient(circle at 15% 10%,#3b1d7a55,transparent 40%),radial-gradient(circle at 85% 30%,#0e7490440,transparent 40%)}
+.glass{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(14px);border-radius:1rem}
+.gt{background:linear-gradient(90deg,#22d3ee,#a78bfa,#f472b6);-webkit-background-clip:text;background-clip:text;color:transparent}
+.tab{padding:.5rem .9rem;border-radius:.75rem;font-size:.85rem;white-space:nowrap;transition:.2s;color:#94a3b8}
+.tab:hover{color:#fff;transform:translateY(-1px)}
+.tab.on{background:linear-gradient(90deg,#0891b2,#7c3aed);color:#fff;box-shadow:0 0 18px #7c3aed88}
+.btn{padding:.5rem 1rem;border-radius:.75rem;font-weight:600;background:linear-gradient(90deg,#06b6d4,#8b5cf6);color:#fff;transition:.2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 16px #22d3ee88}.btn.g{background:rgba(255,255,255,.1)}
+.card{transition:.25s}.card:hover{transform:translateY(-4px);box-shadow:0 0 24px #22d3ee44}
+textarea.code,pre.code{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.85rem;line-height:1.5;background:#0b1224;border:1px solid #ffffff20;border-radius:.75rem;padding:.75rem;width:100%;color:#e2e8f0;tab-size:4}
+textarea.code{min-height:200px;resize:vertical;outline:none}textarea.code:focus{border-color:#22d3ee}
+pre.code{overflow-x:auto;white-space:pre}
+.k{color:#c084fc}.s{color:#86efac}.c{color:#64748b}.b{color:#38bdf8}.n{color:#fbbf24}
+.hide{display:none}
+canvas{display:block;width:100%;height:100%}
+button:focus-visible,textarea:focus-visible{outline:2px solid #22d3ee;outline-offset:2px}
+</style>
+</head>
+<body>
+<nav class="sticky top-0 z-20 glass rounded-none border-x-0 border-t-0 px-3 py-2" style="top:env(safe-area-inset-top,0px)">
+ <div class="max-w-6xl mx-auto flex items-center gap-2 overflow-x-auto">
+  <span class="font-bold gt mr-2 whitespace-nowrap">🐍 Python Quest</span>
+  <button class="tab on" data-t="dash">Dashboard & TP</button>
+  <button class="tab" data-t="materi">Materi Python</button>
+  <button class="tab" data-t="game">Game 3D (5 Level)</button>
+  <button class="tab" data-t="lab">Digital LAB</button>
+  <button class="tab" data-t="lkpd">LKPD & Refleksi</button>
+ </div>
+</nav>
+<main class="max-w-6xl mx-auto p-3 md:p-5">
+
+<section id="dash">
+ <div class="glass relative overflow-hidden" style="height:min(60vh,420px)">
+  <canvas id="hero" aria-label="Animasi 3D node kecerdasan artifisial"></canvas>
+  <div class="absolute inset-0 flex flex-col items-center justify-center text-center p-4 pointer-events-none">
+   <h1 class="text-3xl md:text-5xl font-extrabold gt">Coding Python Kelas X</h1>
+   <p class="mt-3 text-slate-300 max-w-xl">Belajar variabel, tipe data, input-output, dan perkondisian lewat materi, game petualangan 3D, dan laboratorium kode.</p>
+  </div>
+ </div>
+ <h2 class="text-xl font-bold mt-6 mb-3">Tujuan Pembelajaran (Kurikulum Merdeka)</h2>
+ <div id="tp" class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
+</section>
+
+<section id="materi" class="hide">
+ <div class="flex flex-wrap gap-2 mb-4" id="mnav"></div>
+ <div id="mbody" class="space-y-4"></div>
+</section>
+
+<section id="game" class="hide">
+ <div class="glass p-3 mb-3 flex flex-wrap items-center gap-3">
+  <div id="hearts" class="text-xl" aria-label="Nyawa"></div>
+  <div class="flex-1 min-w-[160px]"><div class="text-xs text-slate-400 mb-1">Progress <span id="pt"></span></div><div class="h-2 rounded bg-white/10"><div id="pb" class="h-2 rounded bg-gradient-to-r from-cyan-400 to-violet-500" style="width:0"></div></div></div>
+  <div id="lvls" class="flex gap-1"></div>
+ </div>
+ <div class="grid lg:grid-cols-2 gap-3">
+  <div class="glass overflow-hidden" style="height:340px"><canvas id="gc" aria-label="Arena game 3D"></canvas></div>
+  <div class="glass p-3 space-y-2">
+   <h3 id="gt" class="font-bold gt text-lg"></h3>
+   <p id="gs" class="text-sm text-slate-300"></p>
+   <p id="gk" class="text-sm text-cyan-300"></p>
+   <textarea id="ge" class="code" spellcheck="false" aria-label="Editor kode level"></textarea>
+   <div class="flex gap-2"><button class="btn" id="gr">▶ Jalankan Kode</button><button class="btn g" id="gx">Reset</button></div>
+   <div id="glog" class="text-sm bg-black/40 rounded-lg p-2 h-24 overflow-y-auto font-mono" aria-live="polite"></div>
+  </div>
+ </div>
+</section>
+
+<section id="lab" class="hide">
+ <div class="glass p-3 mb-3">
+  <div class="flex flex-wrap items-center gap-2 mb-2"><h3 class="font-bold">Latihan Ketik Ulang & Variasi Kode</h3>
+   <select id="ref" class="bg-slate-800 rounded-lg p-1 text-sm"></select></div>
+  <p class="text-sm text-slate-300 mb-2">Ketik ulang kode acuan di bawah, tetapi ubah konteksnya (nama variabel, kalimat, atau jenis toko). Menyalin persis tidak dihitung.</p>
+  <pre class="code" id="refc"></pre>
+ </div>
+ <div class="grid lg:grid-cols-2 gap-3">
+  <div class="glass p-3 space-y-2">
+   <textarea id="le" class="code" style="min-height:260px" spellcheck="false" aria-label="Editor kode"></textarea>
+   <div id="lint" class="text-sm text-red-300 min-h-[1.5rem]" aria-live="polite"></div>
+   <div class="flex gap-2"><button class="btn" id="lr">▶ Jalankan Kode</button><button class="btn g" id="lx">Reset Kode</button></div>
+  </div>
+  <div class="glass p-3 space-y-2">
+   <div class="text-xs text-slate-400">Live Console Output</div>
+   <pre class="code" id="lo" style="min-height:130px;white-space:pre-wrap"></pre>
+   <div class="text-xs text-slate-400">3D State Inspector (variabel di memori)</div>
+   <div id="ins" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+  </div>
+ </div>
+</section>
+<section id="lkpd" class="hide">
+ <div class="glass p-4 mb-3"><h2 class="text-xl font-bold gt mb-1">LKPD Interaktif & Refleksi</h2>
+  <p class="text-sm text-slate-300 mb-3">Selesaikan materi, game, dan Digital LAB, lalu kerjakan LKPD dan refleksi ini. Tekan Finish untuk menyimpan hasilmu sebagai PDF.</p>
+  <div class="grid sm:grid-cols-2 gap-2"><input id="nm" class="rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm" placeholder="Nama lengkap" aria-label="Nama lengkap"><input id="kl" class="rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm" placeholder="Kelas (contoh: X-1)" aria-label="Kelas"></div>
+  <div id="lks" class="grid sm:grid-cols-3 gap-2 mt-3 text-sm"></div></div>
+ <h3 class="font-bold mb-2">A. Pemahaman Konsep (10 poin per soal)</h3><div id="qz" class="space-y-3 mb-4"></div>
+ <h3 class="font-bold mb-2">B. Tantangan Kode (25 poin per tugas)</h3><div id="ctw" class="space-y-3 mb-4"></div>
+ <h3 class="font-bold mb-2">C. Refleksi</h3>
+ <div class="glass p-4 space-y-3 mb-4">
+  <div><p class="text-sm mb-2">Seberapa paham kamu pada setiap tujuan pembelajaran?</p><div id="tpr" class="grid sm:grid-cols-2 gap-2 text-sm"></div></div>
+  <label class="block text-sm">1. Hal baru yang paling bermakna yang saya pelajari hari ini:<textarea id="r1" rows="2" class="mt-1 w-full rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm"></textarea></label>
+  <label class="block text-sm">2. Bagian yang masih sulit bagi saya dan alasannya:<textarea id="r2" rows="2" class="mt-1 w-full rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm"></textarea></label>
+  <label class="block text-sm">3. Rencana saya untuk memperbaiki atau memperdalam pemahaman:<textarea id="r3" rows="2" class="mt-1 w-full rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm"></textarea></label>
+  <label class="block text-sm">4. Pesan atau saran untuk pembelajaran berikutnya (opsional):<textarea id="r4" rows="2" class="mt-1 w-full rounded-lg bg-slate-900/80 border border-white/20 p-2 text-sm"></textarea></label>
+ </div>
+ <div class="glass p-4 flex flex-wrap items-center gap-3"><button class="btn" id="fin">🏁 Finish & Simpan PDF</button><span id="fm" class="text-sm text-amber-300" aria-live="polite"></span></div>
+ <div id="fres" class="glass p-4 mt-3 hide"></div>
+</section>
+</main>
+<footer class="text-center text-xs text-slate-400 py-6 px-3">© 2026 Christopher Michael Lauw, M.Kom. Hak cipta dilindungi.</footer>
+
+<script>
+addEventListener('error',e=>{let b=document.getElementById('err');if(!b){b=document.createElement('div');b.id='err';b.className='fixed bottom-2 left-2 right-2 z-50 p-2 rounded-lg bg-red-900 text-xs';document.body.appendChild(b)}b.textContent='Error: '+e.message});
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+/* ---------- Tabs ---------- */
+$$('.tab').forEach(b=>b.onclick=()=>{$$('.tab').forEach(x=>x.classList.toggle('on',x===b));['dash','materi','game','lab','lkpd'].forEach(id=>$('#'+id).classList.toggle('hide',id!==b.dataset.t));window.dispatchEvent(new Event('resize'))});
+/* ---------- TP ---------- */
+['Memahami konsep variabel dan penyimpanannya dalam memori komputer.','Mengidentifikasi dan memanipulasi tipe data dasar (Integer, Float, String, Boolean).','Menerapkan fungsi Input dan Output interaktif dalam pembuatan program Python.','Menganalisis dan mengimplementasikan struktur kontrol keputusan (if, elif, else).','Memecahkan masalah nyata melalui studi kasus integratif logika pemrograman.'].forEach((t,i)=>{$('#tp').insertAdjacentHTML('beforeend',`<div class="glass card p-4"><div class="text-xs font-bold text-cyan-300">TP-0${i+1}</div><p class="mt-1 text-sm">${t}</p></div>`)});
+/* ---------- Highlight ---------- */
+const esc=s=>s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const hl=c=>esc(c).replace(/(#.*$)|(f?"[^"\n]*"|f?'[^'\n]*')|\b(if|elif|else|and|or|not|True|False)\b|\b(print|input|int|float|str|bool|type)\b|\b(\d+\.?\d*)\b/gm,(m,a,s,k,b,n)=>a?`<span class=c>${m}</span>`:s?`<span class=s>${m}</span>`:k?`<span class=k>${m}</span>`:b?`<span class=b>${m}</span>`:`<span class=n>${m}</span>`);
+/* ---------- Materi ---------- */
+const MAT=[
+{t:'1. Variabel',p:['Variabel adalah wadah bernama untuk menyimpan data di memori komputer.','Aturan penulisan: gunakan snake_case, Python bersifat case-sensitive (nama dan Nama berbeda), tidak boleh diawali angka, dan tanpa karakter khusus atau spasi.','Operator penugasan = memasukkan nilai di kanan ke variabel di kiri.'],c:`nama_siswa = "Rani"\numur = 16\ntinggi_badan = 1.58\numur = umur + 1   # nilai variabel bisa berubah\nprint(nama_siswa, umur)`},
+{t:'2. Tipe Data',p:['Tipe data dasar: int (bilangan bulat), float (desimal), str (teks), dan bool (True/False).','type() memeriksa tipe data. Type casting mengubah tipe dengan int(), float(), str().'],c:`a = 10          # int\nb = 3.14        # float\nc = "Halo"      # str\nd = True        # bool\nprint(type(a), type(b), type(c), type(d))\nangka_teks = "25"\nprint(int(angka_teks) + 5)   # 30`},
+{t:'3. Input Output',p:['print() mencetak data. Parameter sep mengatur pemisah, end mengatur akhir baris. f-string menyisipkan variabel dengan {}.','input() menerima teks dari pengguna. Hasilnya selalu str, jadi ubah dengan int() atau float() bila perlu.'],c:`print("A", "B", "C", sep="-")\nprint("Loading", end="...")\nnama = input("Nama kamu: ")\numur = int(input("Umur: "))\nprint(f"Halo {nama}, tahun depan kamu {umur + 1} tahun")`},
+{t:'4. Perkondisian',p:['Operator komparasi: ==, !=, >, <, >=, <=. Operator logika: and, or, not.','Blok if, if-else, dan if-elif-else diakhiri titik dua dan isinya menjorok (indentasi 4 spasi).'],c:`nilai = 78\nif nilai >= 90 and nilai <= 100:\n    print("A")\nelif nilai >= 75:\n    print("B")\nelse:\n    print("Perlu remedial")`},
+{t:'5. Studi Kasus',p:['Kasus 1: Kasir Toko Komputer, menghitung total, memberi diskon dengan if-else, lalu mencetak struk dengan f-string.','Kasus 2: Sistem Kelulusan Nilai AI & Coding, menentukan grade A, B, C, D dari nilai input.'],c:`# Kasus 1: Kasir\nharga = 7500000\njumlah = 2\ntotal = harga * jumlah\nif total > 10000000:\n    diskon = total * 0.1\nelse:\n    diskon = 0\nprint(f"Total   : Rp{total}")\nprint(f"Diskon  : Rp{diskon}")\nprint(f"Bayar   : Rp{total - diskon}")\n\n# Kasus 2: Grade\nnilai = 82\nif nilai >= 90:\n    grade = "A"\nelif nilai >= 80:\n    grade = "B"\nelif nilai >= 70:\n    grade = "C"\nelse:\n    grade = "D"\nprint(f"Nilai {nilai} = Grade {grade}")`}];
+MAT.forEach((m,i)=>{$('#mnav').insertAdjacentHTML('beforeend',`<button class="tab ${i?'':'on'}" data-m="${i}">${m.t}</button>`)});
+function showM(i){(window.__v=window.__v||new Set()).add(i);const m=MAT[i];$('#mbody').innerHTML=`<div class="glass p-4"><h2 class="text-2xl font-bold gt mb-2">${m.t}</h2>${m.p.map(x=>`<p class="text-slate-300 mb-2">${x}</p>`).join('')}<pre class="code">${hl(m.c)}</pre></div>`;$$('#mnav .tab').forEach((b,j)=>b.classList.toggle('on',i===j))}
+$$('#mnav .tab').forEach(b=>b.onclick=()=>showM(+b.dataset.m));showM(0);
+/* ---------- Python engine (mini interpreter berbasis JavaScript) ---------- */
+class PyErr extends Error{}
+const __s=v=>v===true?'True':v===false?'False':v==null?'None':String(v);
+const __kw=(k,v)=>({__kw:k,v});
+const __int=v=>{if(typeof v==='string'){const t=v.trim();if(!/^[+-]?\d+$/.test(t))throw new PyErr(`ValueError: invalid literal for int(): '${v}'`);return parseInt(t,10)}return Math.trunc(Number(v))};
+const __float=v=>{if(typeof v==='string'){const t=v.trim();if(!t||isNaN(Number(t)))throw new PyErr(`ValueError: could not convert string to float: '${v}'`);return Number(t)}return Number(v)};
+const __bool=v=>!!v,__len=v=>v.length,__round=(v,n)=>n?Number(v.toFixed(n)):Math.round(v);
+const __type=v=>`<class '${typeof v==='string'?'str':typeof v==='boolean'?'bool':typeof v==='number'?(Number.isInteger(v)?'int':'float'):'NoneType'}'>`;
+const __range=(a,b,c=1)=>{if(b===undefined){b=a;a=0}const r=[];for(let i=a;c>0?i<b:i>b;i+=c)r.push(i);return r};
+function ask(p){return new Promise(r=>{const o=document.createElement('div');o.className='fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4';o.innerHTML=`<form class="glass p-4 w-full max-w-sm space-y-3" style="background:#0f172a"><label class="block text-sm">${esc(p||'Masukkan nilai:')}</label><input class="w-full rounded-lg bg-slate-800 p-2" autocomplete="off"><button class="btn w-full">OK</button></form>`;document.body.appendChild(o);const i=o.querySelector('input');i.focus();o.querySelector('form').onsubmit=e=>{e.preventDefault();o.remove();r(i.value)}})}
+const KW={and:'&&',or:'||',not:'!',True:'true',False:'false',None:'null',print:'__p',input:'await __in',int:'__int',float:'__float',str:'__s',bool:'__bool',type:'__type',len:'__len',round:'__round',abs:'Math.abs',max:'Math.max',min:'Math.min',range:'__range'};
+function fs(t){const q=t.slice(2,-1);let o='`',i=0;while(i<q.length){const ch=q[i];
+ if(ch=='{'&&q[i+1]=='{'){o+='{';i+=2}else if(ch=='}'&&q[i+1]=='}'){o+='}';i+=2}
+ else if(ch=='{'){let d=1,j=i+1;while(j<q.length&&d){if(q[j]=='{')d++;if(q[j]=='}')d--;j++}const e=q.slice(i+1,j-1),m=e.match(/^(.*):\.(\d+)f$/);o+=m?'${('+tx(m[1])+').toFixed('+m[2]+')}':'${__s('+tx(e)+')}';i=j}
+ else{o+=(ch=='`'||ch=='$')?'\\'+ch:ch;i++}}return o+'`'}
+function tx(s){const T=s.match(/\s+|f?"(?:\\.|[^"\\])*"|f?'(?:\\.|[^'\\])*'|#.*|\d+\.?\d*|[A-Za-z_]\w*|\*\*|==|!=|<=|>=|\/\/|[^\s]/g)||[];
+ const nx=i=>{i++;while(T[i]&&/^\s+$/.test(T[i]))i++;return T[i]};let o='',fr=[],last='',skip=false;
+ T.forEach((t,i)=>{
+  if(/^\s+$/.test(t)){o+=' ';return}if(t[0]=='#')return;
+  if(/^f["']/.test(t))o+=fs(t);
+  else if(/^["']/.test(t)||/^\d/.test(t))o+=t;
+  else if(/^[A-Za-z_]/.test(t)){if(fr.length&&(last=='('||last==',')&&nx(i)=='='){o+=`__kw("${t}",`;fr[fr.length-1].kw=true;skip=true}else o+=KW[t]||t}
+  else if(t=='=')o+=skip?(skip=false,''):'=';
+  else if(t=='==')o+='===';else if(t=='!=')o+='!==';else if(t=='//')o+='/';
+  else if(t=='('){fr.push({kw:false});o+='('}
+  else if(t==','){if(fr.length&&fr[fr.length-1].kw){o+=')';fr[fr.length-1].kw=false}o+=','}
+  else if(t==')'){const f=fr.pop();if(f&&f.kw)o+=')';o+=')'}
+  else o+=t;
+  last=t});return o}
+function colon(t){let q='',d=0;for(let i=0;i<t.length;i++){const c=t[i];if(q){if(c=='\\')i++;else if(c==q)q=''}else if(c=='"'||c=="'")q=c;else if('([{'.includes(c))d++;else if(')]}'.includes(c))d--;else if(c==':'&&!d)return i;else if(c=='#')return -1}return -1}
+function compile(code){const L=code.replace(/\t/g,'    ').split('\n'),vars=new Set(),o=[],st=[];let exp=false,prev=0;
+ const stmt=s=>{s=s.trim();let m;if(!s||s[0]=='#')return'';if(s=='pass')return';';if(s=='break'||s=='continue')return s+';';
+  if(/^(def|class|import|from|try|with|lambda)\b/.test(s))throw new PyErr('SyntaxError: fitur "'+s.split(/\s/)[0]+'" belum didukung di platform ini.');
+  if(m=s.match(/^([A-Za-z_]\w*)\s*(\+|-|\*|\/)?=(?!=)\s*(.+)$/)){vars.add(m[1]);return m[1]+'='+(m[2]?m[1]+m[2]:'')+'('+tx(m[3])+');'}
+  return tx(s)+';'};
+ L.forEach((raw,i)=>{const t=raw.trim();if(!t||t[0]=='#')return;const ind=raw.match(/^ */)[0].length;
+  let cl=0;while(st.length&&ind<=st[st.length-1]){st.pop();cl++}
+  if(exp){if(ind<=prev)throw new PyErr(`IndentationError: baris ${i+1} harus menjorok setelah tanda ":"`);exp=false}
+  else if(ind>prev)throw new PyErr(`IndentationError: indentasi tidak diharapkan pada baris ${i+1}`);
+  prev=ind;const c=colon(t),h=c>=0?t.slice(0,c).trim():t;let body=c>=0?t.slice(c+1).trim():'';if(body[0]=='#')body='';
+  let head=null,m;
+  if(c>=0&&(m=h.match(/^(if|elif|while)\s+(.+)$/)))head=(m[1]=='elif'?'else if':m[1])+'('+tx(m[2])+'){';
+  else if(c>=0&&h=='else')head='else{';
+  else if(c>=0&&(m=h.match(/^for\s+(\w+)\s+in\s+(.+)$/))){vars.add(m[1]);head=`for(${m[1]} of ${tx(m[2])}){`}
+  const pre='}'.repeat(cl);
+  if(head){if(body)o.push(pre+head+stmt(body)+'}');else{o.push(pre+head);st.push(ind);exp=true}}
+  else o.push(pre+stmt(t))});
+ if(exp)throw new PyErr('IndentationError: blok kode kosong setelah tanda ":"');
+ o.push('}'.repeat(st.length));
+ const vs=[...vars];return{body:(vs.length?'var '+vs.join(',')+';\n':'')+o.join('\n'),vars:vs}}
+async function runPy(code){let buf='',ev=[],c;
+ try{c=compile(code)}catch(e){return{out:'',ev,g:{},err:e.message}}
+ const AF=Object.getPrototypeOf(async function(){}).constructor;
+ const env={__p:(...a)=>{const kw={};a=a.filter(x=>x&&x.__kw?(kw[x.__kw]=x.v,0):1);buf+=a.map(__s).join(kw.sep!=null?kw.sep:' ')+(kw.end!=null?kw.end:'\n')},
+  __in:async p=>{p=p==null?'':__s(p);const v=await ask(p);buf+=p+v+'\n';return v},
+  buka_tangga:t=>ev.push('tangga:'+__s(t)),pakai_jas_hujan:()=>ev.push('hujan'),berlindung:()=>ev.push('badai'),jalan_terus:()=>ev.push('cerah'),aktifkan_mesin:()=>ev.push('mesin'),
+  __kw,__int,__float,__s,__bool,__type,__len,__round,__range};
+ const ks=Object.keys(env);let fn;
+ try{fn=new AF(...ks,c.body+'\nreturn {'+c.vars.map(v=>`${v}:typeof ${v}==='undefined'?undefined:${v}`).join(',')+'}')}catch(e){return{out:'',ev,g:{},err:'SyntaxError: ada kesalahan penulisan (cek kurung, tanda kutip, atau operator).'}}
+ const fin=()=>buf.replace(/\n$/,'');
+ try{const g=await fn(...ks.map(k=>env[k]));return{out:fin(),ev,g,err:null}}
+ catch(e){const m=e instanceof PyErr?e.message:e instanceof ReferenceError?`NameError: variabel '${(e.message.match(/^(\w+)/)||[])[1]}' belum didefinisikan`:`${e.name}: ${e.message}`;return{out:fin(),ev,g:{},err:m}}}
+function lint(code){const L=code.split('\n'),r=[];L.forEach((l,i)=>{const s=l.trim();
+ if(/^(if|elif|else|for|while|def)\b/.test(s)&&!s.includes(':'))r.push(`Baris ${i+1}: sepertinya lupa tanda titik dua ":" di akhir.`);
+ if(s.endsWith(':')){let j=i+1;while(j<L.length&&!L[j].trim())j++;if(j<L.length&&L[j].match(/^ */)[0].length<=l.match(/^ */)[0].length)r.push(`Baris ${j+1}: setelah ":" baris harus menjorok (indentasi 4 spasi).`)}
+ if((s.match(/"/g)||[]).length%2)r.push(`Baris ${i+1}: tanda kutip " belum ditutup.`)});return r}
+function tabKey(ta,cb){ta.addEventListener('keydown',e=>{if(e.key==='Tab'){e.preventDefault();const p=ta.selectionStart;ta.setRangeText('    ',p,ta.selectionEnd,'end')}});ta.addEventListener('input',cb)}
+/* ---------- Lab ---------- */
+const REFS=[{n:'Kasir toko buku',c:`nama_buku = "Belajar Python"\nharga = 50000\njumlah = 3\ntotal = harga * jumlah\nif total > 100000:\n    total = total - 10000\nprint(f"Membeli {jumlah} {nama_buku}, total Rp{total}")`},{n:'Salam nama siswa',c:`nama = input("Siapa namamu? ")\numur = int(input("Umur: "))\nprint(f"Halo {nama}, tahun depan umurmu {umur + 1}")`},{n:'Grade nilai',c:`nilai = 85\nif nilai >= 90:\n    grade = "A"\nelif nilai >= 80:\n    grade = "B"\nelse:\n    grade = "C"\nprint(f"Grade: {grade}")`}];
+REFS.forEach((r,i)=>$('#ref').insertAdjacentHTML('beforeend',`<option value="${i}">${r.n}</option>`));
+const setRef=()=>{$('#refc').innerHTML=hl(REFS[$('#ref').value].c)};$('#ref').onchange=setRef;setRef();
+const doLint=()=>{const r=lint($('#le').value);$('#lint').innerHTML=r.length?'💡 '+esc(r[0]):''};tabKey($('#le'),doLint);
+$('#lx').onclick=()=>{$('#le').value='';$('#lo').textContent='';$('#ins').innerHTML='';doLint()};
+$('#lr').onclick=async()=>{const code=$('#le').value,norm=s=>s.replace(/\s+/g,'');
+ const l=lint(code);if(l.length){$('#lo').innerHTML=`<span style="color:#fca5a5">${esc(l[0])}</span>`;return}
+ const same=norm(code)===norm(REFS[$('#ref').value].c);
+ window.__lr=(window.__lr||0)+1;const r=await runPy(code);let h=esc(r.out);if(r.err)h+=`\n<span style="color:#fca5a5">⚠ ${esc(r.err)}</span>`;
+ if(same)h+='\n<span style="color:#fbbf24">ℹ Kodemu sama persis dengan acuan. Coba ubah nama variabel atau konteksnya!</span>';
+ else if(!r.err&&code.trim())h+='\n<span style="color:#86efac">✔ Bagus, variasi kodemu berjalan.</span>';
+ $('#lo').innerHTML=h;$('#ins').innerHTML=Object.entries(r.g).map(([k,v])=>`<div class="glass p-2 text-xs"><div class="text-cyan-300 font-mono">${esc(k)}</div><div class="truncate">${esc(JSON.stringify(v))}</div><div class="text-slate-400">${Array.isArray(v)?'list':typeof v==='number'?(Number.isInteger(v)?'int':'float'):typeof v==='string'?'str':typeof v==='boolean'?'bool':'obj'}</div></div>`).join('')};
+/* ---------- 3D helpers ---------- */
+const view=[];
+function mk(c){const r=new THREE.WebGLRenderer({canvas:c,antialias:true,alpha:true}),s=new THREE.Scene(),cam=new THREE.PerspectiveCamera(55,1,.1,100);s.add(new THREE.AmbientLight(0xffffff,.6));const d=new THREE.DirectionalLight(0xffffff,.8);d.position.set(3,8,5);s.add(d);const o={r,s,cam,c,tick:null};view.push(o);return o}
+const M=(c,e,i)=>new THREE.MeshStandardMaterial({color:c,emissive:e||0,emissiveIntensity:i||.8});
+const box=(w,h,d,m,x,y,z)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),m);b.position.set(x,y,z);return b};
+const ball=(r,m,x,y,z)=>{const b=new THREE.Mesh(new THREE.SphereGeometry(r,20,20),m);b.position.set(x,y,z);return b};
+function label(t){const c=document.createElement('canvas');c.width=256;c.height=64;const x=c.getContext('2d');x.font='bold 34px monospace';x.fillStyle='#67e8f9';x.textAlign='center';x.fillText(t,128,44);const s=new THREE.Sprite(new THREE.SpriteMaterial({map:new THREE.CanvasTexture(c),transparent:true}));s.scale.set(3,.75,1);return s}
+function fit(v){const w=v.c.clientWidth,h=v.c.clientHeight;if(!w||!h)return;if(v.c.width!==w*devicePixelRatio){v.r.setPixelRatio(Math.min(devicePixelRatio,2));v.r.setSize(w,h,false);v.cam.aspect=w/h;v.cam.updateProjectionMatrix()}}
+let mx=0,my=0;addEventListener('pointermove',e=>{mx=e.clientX/innerWidth-.5;my=e.clientY/innerHeight-.5});
+/* Hero */
+const H=mk($('#hero'));H.cam.position.z=9;const hg=new THREE.Group();H.s.add(hg);
+const pts=[];for(let i=0;i<70;i++){pts.push(new THREE.Vector3(Math.random()-.5,Math.random()-.5,Math.random()-.5).normalize().multiplyScalar(2+Math.random()*3.5))}
+hg.add(new THREE.Points(new THREE.BufferGeometry().setFromPoints(pts),new THREE.PointsMaterial({color:0x67e8f9,size:.14})));
+const lp=[];pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{if(a.distanceTo(b)<2)lp.push(a,b)}));
+hg.add(new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(lp),new THREE.LineBasicMaterial({color:0x8b5cf6,transparent:true,opacity:.5})));
+const fl=['print()','if','int','"AI"','x = 5','elif','input()'].map((t,i)=>{const s=label(t);const a=i/7*Math.PI*2;s.position.set(Math.cos(a)*4.5,(i%3-1)*1.4,Math.sin(a)*4.5);hg.add(s);return s});
+H.tick=t=>{hg.rotation.y=t*.12;fl.forEach((s,i)=>s.position.y=(i%3-1)*1.4+Math.sin(t+i)*.3);H.cam.position.x+=(mx*3-H.cam.position.x)*.05;H.cam.position.y+=(-my*2-H.cam.position.y)*.05;H.cam.lookAt(0,0,0)};
+/* ---------- Game ---------- */
+const G=mk($('#gc'));G.cam.position.set(0,4,10);G.cam.lookAt(0,1.5,0);
+const LV=[
+{t:'Level 1: Menyeberangi Sungai Deras',s:'Sungai menghalangi karakter. Buat variabel agar jembatan 3D muncul.',k:'Tugas: panjang_jembatan = 15 dan lebar_sungai = 15 (jembatan harus cukup panjang).',d:'panjang_jembatan = \nlebar_sungai = '},
+{t:'Level 2: Menyelamatkan Kucing',s:'Kucing terjebak di pohon setinggi 8 meter. Tinggi tangga tersimpan sebagai string "8".',k:'Tugas: tinggi = int("8") lalu panggil buka_tangga(tinggi).',d:'tinggi = '},
+{t:'Level 3: Gerbang Sandi Rahasia AI',s:'Robot penjaga mengunci pintu labirin.',k:'Tugas: nama_agen = input(...) lalu print(f"Buka Gerbang untuk Agen {nama_agen}") persis.',d:'nama_agen = input("Nama agen: ")\n'},
+{t:'Level 4: Labirin Cuaca Ekstrem',s:'Cuaca berubah-ubah: hujan, badai, atau cerah.',k:'Tugas: isi cuaca, lalu if cuaca == "hujan": pakai_jas_hujan() / elif "badai": berlindung() / else: jalan_terus().',d:'cuaca = "hujan"\n'},
+{t:'Level 5: Misi Penyelamatan Pulau AI',s:'Generator utama pulau padam dan harus diaktifkan kembali.',k:'Tugas: daya = 90, kata_sandi = input(...), jika daya > 80 and kata_sandi == "AI_SUCCESS" panggil aktifkan_mesin().',d:'daya = 90\nkata_sandi = input("Kata sandi: ")\n'}];
+let lv=0,lives=3,done=[];let W=new THREE.Group();G.s.add(W);let CH,A={};
+function build(n){G.s.remove(W);W=new THREE.Group();G.s.add(W);G.tick=null;A={};
+ CH=ball(.35,M(0x22d3ee,0x0891b2),0,.6,0);W.add(CH);const gr=(w,x)=>box(w,.4,5,M(0x166534),x,0,0);
+ if(n==0){W.add(gr(4,-5),gr(4,5),box(6,.1,5,M(0x1d4ed8,0x1e3a8a,.5),0,-.1,0));A.br=box(6,.2,1.6,M(0xa16207),0,5,0);A.br.visible=false;W.add(A.br);CH.position.set(-5,.8,0)}
+ if(n==1){W.add(box(16,.2,6,M(0x166534),0,-.1,0));W.add(box(.7,4.5,.7,M(0x78350f),3,2.2,0));const l=new THREE.Mesh(new THREE.ConeGeometry(2,2.5,12),M(0x15803d));l.position.set(3,5,0);W.add(l);A.cat=ball(.4,M(0xf97316),3,4.9,0);W.add(A.cat);A.l=box(.25,1,.25,M(0xfbbf24),1.6,.5,0);A.l.scale.y=.01;W.add(A.l);CH.position.set(-4,.6,0)}
+ if(n==2){W.add(box(16,.2,6,M(0x334155),0,-.1,0));A.d1=box(2.5,4,.5,M(0x475569),-1.25,2,0);A.d2=box(2.5,4,.5,M(0x475569),1.25,2,0);W.add(A.d1,A.d2);W.add(box(1,2,1,M(0x64748b),-4,1,0));A.eye=ball(.3,M(0xef4444,0xef4444),-4,2.4,.5);W.add(A.eye);CH.position.set(-6,.6,0)}
+ if(n==3){W.add(box(16,.2,6,M(0x334155),0,-.1,0));CH.position.set(-6,.6,0);A.sun=ball(1,M(0xfde047,0xfacc15),5,5,-2);A.sun.visible=false;W.add(A.sun);const N=300,p=new Float32Array(N*3);for(let i=0;i<N;i++){p[i*3]=Math.random()*16-8;p[i*3+1]=Math.random()*8;p[i*3+2]=Math.random()*6-3}const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(p,3));A.rain=new THREE.Points(g,new THREE.PointsMaterial({color:0x60a5fa,size:.08}));A.rain.visible=false;W.add(A.rain)}
+ if(n==4){const i=new THREE.Mesh(new THREE.CylinderGeometry(4,4.5,.6,32),M(0x166534));i.position.y=-.3;W.add(i);A.gen=box(1.6,1.6,1.6,M(0x334155,0,0),0,1,0);W.add(A.gen);A.ring=new THREE.Group();for(let k=0;k<60;k++){const a=k/60*Math.PI*2;A.ring.add(ball(.07,M(0xfde047,0xfde047),Math.cos(a)*3,1,Math.sin(a)*3))}A.ring.visible=false;W.add(A.ring);A.pl=new THREE.PointLight(0xfde047,0,12);A.pl.position.set(0,2.5,0);W.add(A.pl);CH.position.set(-3.3,.5,1)}}
+function play(d,f){const t0=performance.now();G.tick=()=>{const p=Math.min((performance.now()-t0)/d,1);f(p)}}
+function anim(n,ok,r,g){
+ if(n==0){A.br.visible=true;const k=Math.min(g.panjang_jembatan/g.lebar_sungai,1)||.2;A.br.scale.x=k;play(3500,p=>{A.br.position.y=5-4.75*Math.min(p/.3,1);if(ok&&p>.4)CH.position.x=-5+10*(p-.4)/.6})}
+ if(n==1)play(3500,p=>{A.l.scale.y=Math.max(.01,(ok?4.4:1.2)*Math.min(p/.6,1));A.l.position.y=A.l.scale.y/2;if(ok&&p>.6){const q=(p-.6)/.4;A.cat.position.set(3-1.4*q,4.9-4.4*q+Math.sin(q*Math.PI)*1.2,0)}})
+ if(n==2)play(3000,p=>{A.eye.material.color.set(ok?0x22c55e:(Math.floor(p*12)%2?0xef4444:0x7f1d1d));A.eye.material.emissive.set(ok?0x22c55e:0xef4444);if(ok){const o=Math.min(p/.5,1);A.d1.position.x=-1.25-2.4*o;A.d2.position.x=1.25+2.4*o;if(p>.5)CH.position.x=-6+10*(p-.5)/.5}})
+ if(n==3){const w=r.ev[0]||'cerah';A.rain.visible=w!='cerah';A.sun.visible=w=='cerah';A.rain.material.color.set(w=='badai'?0xa78bfa:0x60a5fa);const pos=A.rain.geometry.attributes.position;
+  play(4000,p=>{for(let i=0;i<300;i++){let y=pos.array[i*3+1]-.15;if(y<0)y=8;pos.array[i*3+1]=y}pos.needsUpdate=true;G.s.background=w=='badai'&&Math.random()<.04?new THREE.Color(0xffffff):null;if(ok)CH.position.x=-6+12*p})}
+ if(n==4){A.ring.visible=ok;play(4000,p=>{if(ok){A.gen.material.color.set(0xfde047);A.gen.material.emissive.set(0xfde047);A.gen.material.emissiveIntensity=p*2;A.pl.intensity=p*3;A.ring.rotation.y=p*8;A.ring.scale.setScalar(1+p*.3)}})}}
+function chk(n,code,r){const g=r.g,e=r.ev;
+ if(n==0)return g.panjang_jembatan==null||g.lebar_sungai==null?[0,'Variabel panjang_jembatan dan lebar_sungai belum dibuat.']:g.panjang_jembatan>=g.lebar_sungai?[1,'Jembatan turun! Karakter menyeberang.']:[0,'Jembatan terlalu pendek, panjang harus >= lebar sungai.'];
+ if(n==1)return !/int\s*\(/.test(code)?[0,'Gunakan int() untuk mengubah string menjadi integer.']:e.includes('tangga:8')?[1,'Tangga terpasang, kucing selamat!']:[0,'Panggil buka_tangga(tinggi) dengan tinggi bernilai 8.'];
+ if(n==2)return /(^|\n)Buka Gerbang untuk Agen \S+/.test(r.out)&&/input\s*\(/.test(code)&&/f["']/.test(code)?[1,'Sandi diterima, gerbang terbuka!']:[0,'Gunakan input() dan f-string persis: Buka Gerbang untuk Agen {nama_agen}.'];
+ if(n==3)return /\bif\b/.test(code)&&/\belif\b/.test(code)&&/\belse\b/.test(code)&&e.length?[1,'Logika cuaca benar: karakter memilih jalur aman.']:[0,'Lengkapi if, elif, dan else, lalu pastikan salah satu fungsi dipanggil.'];
+ return e.includes('mesin')&&/input\s*\(/.test(code)&&/\band\b/.test(code)&&g.daya>80?[1,'Generator menyala! Pulau AI terselamatkan.']:[0,'Gabungkan daya > 80 and kata_sandi == "AI_SUCCESS", lalu panggil aktifkan_mesin().']}
+const log=(m,c)=>{$('#glog').insertAdjacentHTML('beforeend',`<div style="color:${c||'#cbd5e1'}">▸ ${esc(m)}</div>`);$('#glog').scrollTop=1e9};
+function ui(){$('#hearts').textContent='❤️'.repeat(lives)+'🖤'.repeat(3-lives);$('#pt').textContent=done.length+'/5';$('#pb').style.width=done.length*20+'%';$('#lvls').innerHTML=LV.map((_,i)=>`<button class="tab ${i==lv?'on':''}" data-l="${i}">${done.includes(i)?'✔':i+1}</button>`).join('');$$('#lvls .tab').forEach(b=>b.onclick=()=>setLv(+b.dataset.l));$('#gt').textContent=LV[lv].t;$('#gs').textContent=LV[lv].s;$('#gk').textContent=LV[lv].k}
+function setLv(n){lv=n;build(n);$('#ge').value=LV[n].d;$('#glog').innerHTML='';log('Siap! Tulis kode Python lalu tekan Jalankan.');ui()}
+tabKey($('#ge'),()=>{});
+$('#gx').onclick=()=>{$('#ge').value=LV[lv].d;build(lv)};
+$('#gr').onclick=async()=>{const code=$('#ge').value,l=lint(code);if(l.length){log(l[0],'#fca5a5');return}
+ const r=await runPy(code);if(r.out)log('Konsol: '+r.out.split('\n').join(' | '));
+ if(r.err){log('Error: '+r.err,'#fca5a5');return lose()}
+ const [ok,m]=chk(lv,code,r);build(lv);anim(lv,!!ok,r,r.g);log(m,ok?'#86efac':'#fca5a5');
+ if(ok){if(!done.includes(lv))done.push(lv);ui();if(done.length==5)log('🏆 Semua level selesai! Kamu Python Hero.','#fde047');else if(lv<4){$('#glog').insertAdjacentHTML('beforeend','<button class="btn mt-1" id="nx">Lanjut ke level berikutnya →</button>');$('#nx').onclick=()=>setLv(lv+1)}}else lose()};
+function lose(){lives--;if(lives<=0){lives=3;log('Nyawa habis, nyawa dipulihkan. Coba lagi dengan teliti!','#fbbf24')}ui()}
+/* ---------- Render loop ---------- */
+const clock=new THREE.Clock();
+(function loop(){requestAnimationFrame(loop);const t=clock.getElapsedTime();view.forEach(v=>{if(!v.c.offsetParent)return;fit(v);v.tick&&v.tick(t);v.r.render(v.s,v.cam)})})();
+/* ---------- LKPD & Refleksi ---------- */
+const QZ=[
+{q:'Manakah nama variabel yang valid di Python?',o:['2nama','nama_siswa','nama siswa','nama-siswa'],a:1,e:'Variabel tidak boleh diawali angka, berspasi, atau memakai tanda hubung.'},
+{q:'Apa tipe data dari nilai 3.14?',o:['int','float','str','bool'],a:1,e:'Bilangan desimal bertipe float.'},
+{q:'Apa hasil dari int("8") + 2 ?',o:['"82"','10','Error','8.2'],a:1,e:'int() mengubah teks "8" menjadi bilangan 8, lalu ditambah 2.'},
+{q:'Mengapa hasil input() sering dibungkus int() atau float()?',o:['Karena input() selalu menghasilkan teks (str)','Karena input() selalu menghasilkan boolean','Karena print() tidak bisa mencetak angka','Karena Python tidak punya angka'],a:0,e:'Semua masukan dari input() bertipe str.'},
+{q:'Apa output kode berikut?\nx = 75\nif x >= 80:\n    print("A")\nelif x >= 70:\n    print("B")\nelse:\n    print("C")',o:['A','B','C','Tidak ada output'],a:1,e:'75 tidak memenuhi x >= 80, tetapi memenuhi x >= 70.'}];
+const CT=[
+{t:'Tantangan 1: Total Belanja',i:'Buat variabel harga = 25000 dan jumlah = 3. Hitung total dengan operator *, lalu cetak hasilnya dengan print().',chk:(c,r)=>r.g.harga===25000&&r.g.jumlah===3&&/\*/.test(c)&&r.out.includes('75000')},
+{t:'Tantangan 2: Grade Nilai',i:'Buat variabel nilai = 85. Dengan if-elif-else: nilai >= 90 menjadi A, nilai >= 80 menjadi B, selain itu C. Cetak grade-nya.',chk:(c,r)=>r.g.nilai===85&&/\belif\b/.test(c)&&/\belse\b/.test(c)&&r.out.trim().split(/\s+/).includes('B')}];
+const QA={},CS=[];
+$('#qz').innerHTML=QZ.map((x,i)=>`<div class="glass p-3"><p class="font-semibold text-sm mb-2" style="white-space:pre-wrap">${i+1}. ${esc(x.q)}</p>${x.o.map((o,j)=>`<label class="flex gap-2 items-start text-sm py-1 cursor-pointer"><input type="radio" name="q${i}" value="${j}" class="mt-1">${esc(o)}</label>`).join('')}<div id="qf${i}" class="text-xs mt-1" aria-live="polite"></div></div>`).join('');
+$$('#qz input').forEach(r=>r.onchange=()=>{const i=+r.name.slice(1),j=+r.value;QA[i]=j;$('#qf'+i).innerHTML=j==QZ[i].a?`<span style="color:#86efac">Benar! ${esc(QZ[i].e)}</span>`:'<span style="color:#fca5a5">Belum tepat, coba pikirkan lagi.</span>'});
+$('#ctw').innerHTML=CT.map((x,i)=>`<div class="glass p-3 space-y-2"><p class="font-semibold text-sm">${x.t}</p><p class="text-sm text-slate-300">${x.i}</p><textarea id="ct${i}" class="code" style="min-height:120px" spellcheck="false" aria-label="Kode ${x.t}"></textarea><div class="flex items-center gap-3"><button class="btn g" data-c="${i}">Cek Jawaban</button><span id="cf${i}" class="text-sm" aria-live="polite"></span></div></div>`).join('');
+CT.forEach((_,i)=>tabKey($('#ct'+i),()=>{}));
+$$('#ctw button').forEach(b=>b.onclick=()=>checkCode(+b.dataset.c));
+async function checkCode(i){const code=$('#ct'+i).value,el=$('#cf'+i);let s;
+ if(!code.trim())s={ok:false,msg:'Belum dikerjakan.',code:'',out:''};
+ else{const l=lint(code);if(l.length)s={ok:false,msg:l[0],code,out:''};else{const r=await runPy(code);s=r.err?{ok:false,msg:r.err,code,out:r.out}:CT[i].chk(code,r)?{ok:true,msg:'Benar!',code,out:r.out}:{ok:false,msg:'Program berjalan, tetapi hasil atau caranya belum sesuai instruksi.',code,out:r.out}}}
+ CS[i]=s;el.innerHTML=`<span style="color:${s.ok?'#86efac':'#fca5a5'}">${s.ok?'✔ ':''}${esc(s.msg)}</span>`;return s}
+const TPN=['TP-01 Variabel','TP-02 Tipe data','TP-03 Input dan output','TP-04 Perkondisian','TP-05 Studi kasus'],PL=['Belum paham','Mulai paham','Paham','Sangat paham'];
+$('#tpr').innerHTML=TPN.map((t,i)=>`<label class="flex items-center justify-between gap-2">${t}<select id="tp${i}" class="bg-slate-800 rounded-lg p-1">${PL.map((p,j)=>`<option value="${j}" ${j==2?'selected':''}>${p}</option>`).join('')}</select></label>`).join('');
+function lkStatus(){const m=(window.__v||new Set()).size,g=done.length,l=window.__lr||0,c=(n,t,ok)=>`<div class="glass p-2">${ok?'✔':'○'} ${t}: <b>${n}</b></div>`;
+ $('#lks').innerHTML=c(m+'/5','Materi dibuka',m>=5)+c(g+'/5','Level game selesai',g>=5)+c(l+'x','Digital LAB dijalankan',l>0)}
+$('.tab[data-t="lkpd"]').addEventListener('click',lkStatus);
+async function mkPdf(d){const {jsPDF}=window.jspdf,doc=new jsPDF({unit:'mm',format:'a4'}),W=210,m=15,mw=W-2*m;let y=20;
+ const cl=s=>String(s==null?'':s).replace(/[^\x09\x0A\x20-\x7E\u00A0-\u00FF]/g,'');
+ const foot=()=>{doc.setFont('helvetica','italic');doc.setFontSize(8);doc.setTextColor(120);doc.text('© 2026 Christopher Michael Lauw, M.Kom',W/2,290,{align:'center'});doc.setTextColor(0)};
+ const T=(s,o={})=>{doc.setFont(o.f||'helvetica',o.b?'bold':'normal');doc.setFontSize(o.sz||10);const ind=o.ind||0;
+  const L=cl(s).split('\n').flatMap(x=>doc.splitTextToSize(x||' ',mw-ind));L.forEach(l=>{if(y>278){foot();doc.addPage();y=20}doc.text(l,m+ind,y);y+=o.lh||5.2});y+=o.gap||0};
+ T('LKPD & Refleksi - Coding Python Kelas X',{b:1,sz:15,gap:2});
+ T('Nama   : '+d.nama);T('Kelas  : '+d.kelas);T('Tanggal: '+d.tgl,{gap:3});
+ T('Ringkasan Aktivitas',{b:1,sz:12});T(`Materi dibuka: ${d.materi}/5   |   Level game selesai: ${d.game}/5 (nyawa tersisa ${d.lives})   |   Digital LAB dijalankan: ${d.lab}x`,{gap:3});
+ T('A. Pemahaman Konsep',{b:1,sz:12});
+ QZ.forEach((x,i)=>{const a=QA[i];T(`${i+1}. ${x.q}`,{b:1});T('Jawaban: '+(a==null?'(tidak dijawab)':x.o[a])+'  ->  '+(a===x.a?'BENAR':'SALAH (kunci: '+x.o[x.a]+')'),{ind:4,gap:1.5})});
+ T(`Skor A: ${d.sA}/50`,{b:1,gap:3});
+ T('B. Tantangan Kode',{b:1,sz:12});
+ CT.forEach((x,i)=>{const s=CS[i];T(x.t,{b:1});T(x.i,{ind:4});T(s.code||'(kosong)',{f:'courier',sz:9,ind:4,lh:4.4});T('Output: '+(s.out||'-'),{ind:4});T('Status: '+(s.ok?'BENAR':'BELUM SESUAI - '+s.msg),{ind:4,gap:2})});
+ T(`Skor B: ${d.sB}/50`,{b:1,gap:2});T(`NILAI AKHIR: ${d.sA+d.sB}/100`,{b:1,sz:13,gap:3});
+ T('C. Refleksi',{b:1,sz:12});T('Tingkat pemahaman: '+TPN.map((t,i)=>t+' = '+PL[d.tp[i]]).join('; '),{gap:2});
+ [['1. Hal baru yang paling bermakna',d.r[0]],['2. Bagian yang masih sulit',d.r[1]],['3. Rencana perbaikan',d.r[2]],['4. Pesan/saran',d.r[3]||'-']].forEach(([h,v])=>{T(h,{b:1});T(v,{ind:4,gap:2})});
+ foot();return doc.output('blob')}
+$('#fin').onclick=async()=>{const fm=$('#fm'),nama=$('#nm').value.trim(),kelas=$('#kl').value.trim(),r=['r1','r2','r3','r4'].map(id=>$('#'+id).value.trim());
+ if(!nama||!kelas){fm.textContent='Isi nama dan kelas terlebih dahulu.';return}
+ if(r.slice(0,3).some(x=>x.length<10)){fm.textContent='Lengkapi refleksi nomor 1 sampai 3 (minimal 10 karakter).';return}
+ $('#fin').disabled=true;fm.textContent='Memeriksa jawaban dan membuat PDF...';
+ try{for(let i=0;i<CT.length;i++)await checkCode(i);
+  const sA=QZ.reduce((s,x,i)=>s+(QA[i]===x.a?10:0),0),sB=CS.reduce((s,x)=>s+(x&&x.ok?25:0),0);
+  const d={nama,kelas,tgl:new Date().toLocaleString('id-ID'),materi:(window.__v||new Set()).size,game:done.length,lives,lab:window.__lr||0,sA,sB,r,tp:TPN.map((_,i)=>+$('#tp'+i).value)};
+  const blob=await mkPdf(d);
+  $('#fres').classList.remove('hide');$('#fres').innerHTML=`<h3 class="font-bold gt text-lg">Hasil LKPD: ${esc(nama)}</h3><p class="text-sm mt-1">Skor A: <b>${sA}/50</b> | Skor B: <b>${sB}/50</b> | Nilai akhir: <b>${sA+sB}/100</b></p><p class="text-sm text-slate-300 mt-1">Aktivitas: materi ${d.materi}/5, game ${d.game}/5, LAB ${d.lab}x.</p>`;
+  const dl=window.claude?await claude.use('downloads'):null;
+  if(!dl){fm.textContent='Hasil dihitung, tetapi penyimpanan PDF tidak tersedia di tampilan ini. Buka halaman ini langsung di claude.ai.';return}
+  const fn='LKPD_'+nama.replace(/[^\w\-]+/g,'_')+'.pdf';
+  try{await dl.save({filename:fn,data:blob});fm.textContent='✔ PDF disimpan: '+fn}catch(e){fm.textContent=e&&e.code=='declined'?'Penyimpanan dibatalkan. Tekan Finish lagi untuk menyimpan PDF.':'PDF belum tersimpan ('+(e&&e.code||'error')+'). Coba tekan Finish lagi.'}
+ }catch(e){fm.textContent='Terjadi kesalahan: '+e.message}finally{$('#fin').disabled=false}};
+setLv(0);
+</script>
+</body>
+</html>
